@@ -3,11 +3,11 @@ services:
 
   database:
     image: 'mongo:4.4.6'
-    container_name: 'mongo-container'
+    container_name: 'mongo-web'
     environment:
-      - MONGO_INITDB_DATABASE=cyberdroid
-      - MONGO_INITDB_ROOT_USERNAME=cyberdroid
-      - MONGO_INITDB_ROOT_PASSWORD=cyberdroid
+      - MONGO_INITDB_DATABASE=web
+      - MONGO_INITDB_ROOT_USERNAME=web
+      - MONGO_INITDB_ROOT_PASSWORD=web
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./mongo-data:/data/db
@@ -16,6 +16,6 @@ services:
 
   cache:
     image: 'redis'
-    container_name: 'some-redis'
+    container_name: 'redis-web'
     ports:
       - '6379:6379'
