@@ -12,6 +12,8 @@ import {
   CCardText,
   CCardFooter,
   CCardHeader,
+  CInputGroup,
+  CFormInput,
   CButton,
 } from '@coreui/react'
 import logo from './../../assets/images/react.jpg'
@@ -23,12 +25,13 @@ import { error_handling } from 'src/error_handling'
 const StockPage = () => {
   const handleClick = (e) => {
     console.log(e)
-    axios.post(process.env.REACT_APP_API_BASE_URL + `/influencer/getdetail`, { username: e }).then((res) => {
-      console.log(res)
-      setTweets(res.data.tweets)
-      setStateHidden(false)
-
-    })
+    axios
+      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/getdetail`, { username: e })
+      .then((res) => {
+        console.log(res)
+        setTweets(res.data.tweets)
+        setStateHidden(false)
+      })
   }
 
   // const handlePhoto = (e) => {
@@ -39,15 +42,28 @@ const StockPage = () => {
 
   // }
 
-
   const divStyle = {
     overflowY: 'scroll',
     width: '100%',
     float: 'left',
     height: '600px',
     position: 'relative',
+  }
 
-  };
+  const divStyle2 = {
+    width: '100%',
+    float: 'left',
+    height: '150px',
+    position: 'relative',
+  }
+
+  const divStyle3 = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '400px',
+    position: 'relative',
+  }
   /*get data from mongodb*/
   const [users, setUsers] = useState([])
   const [hosts, setHosts] = useState([])
@@ -68,38 +84,49 @@ const StockPage = () => {
         addToast(error_handling(error))
       })
   }, [])
+
+  // TODO: fix profile info
+  //          <CCard hidden={stateHidden}>
+  //            <CCardHeader title="Influencers">Profile Details</CCardHeader>
+  //            <CCardBody>
+  //              <div style={divStyle2}>
+  //                <CRow>
+  //                  <CCardBody>
+  //                    <CCardText>{'@' + tweets[0].user.screen_name}</CCardText>
+  //                    <CCardText>{tweets[0].user.followers_count}</CCardText>
+  //                    <CCardText>{tweets[0].user.friends_count}</CCardText>
+  //                    <CCardText>{tweets[0].user.favourites_count}</CCardText>
+  //                  </CCardBody>
+  //                </CRow>
+  //              </div>
+  //            </CCardBody>
+  //          </CCard>
   return (
     <>
       <CRow>
         <CCol md={6}>
           <CCard>
-            <CCardHeader
-              title="Influencers"
-            >
-              Influencers
-            </CCardHeader>
+            <CCardHeader title="Influencers">Influencers</CCardHeader>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                onChange={(e) => setInfluencer(e.target.value)}
+                placeholder="Search Username"
+              />
+              <CButton onClick={() => handleClick(username)}>Search</CButton>
+            </CInputGroup>
             <CCardBody>
               <div style={divStyle}>
                 <CRow>
                   {users.map((item, index) => (
-
                     <CCard style={{ width: '10rem' }}>
                       <CCardImage orientation="top" src={item.profile_image_url} />
-                      <CCardBody >
-
-                        <CCardTitle>{item.username}</CCardTitle>
-                        <CCardText>{item.name}</CCardText>
+                      <CCardBody>
+                        <CCardText>{'@' + item.username}</CCardText>
                       </CCardBody>
-                      <CListGroup flush>
-                        <CListGroupItem>{item.followers_count}</CListGroupItem>
-                        <CListGroupItem>{item.location}</CListGroupItem>
-                      </CListGroup>
                       <CCardBody>
                         <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
-                        <CCardLink href="#">Another link</CCardLink>
                       </CCardBody>
                     </CCard>
-
                   ))}
                 </CRow>
               </div>
@@ -108,37 +135,23 @@ const StockPage = () => {
         </CCol>
 
         <CCol md={6}>
-          <CCard hidden={stateHidden} >
-            <CCardHeader
-              title="Influencers"
-            >
-              Profile Details
-            </CCardHeader>
+          <CCard hidden={stateHidden}>
+            <CCardHeader title="Influencers">Profile Details</CCardHeader>
             <CCardBody>
               <div style={divStyle}>
                 <CRow>
                   {tweets.map((item, index) => (
                     <CCard style={{ width: '10rem' }}>
                       {/* <CCardImage orientation="top" src={handlePhoto(item)} /> */}
-                      <CCardBody >
-                        {item.text}
-                      </CCardBody>
-
+                      <CCardBody>{item.text}</CCardBody>
                     </CCard>
-
-
-
                   ))}
-
                 </CRow>
               </div>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-
-
-
     </>
   )
 }
