@@ -6,8 +6,6 @@ import redis
 from celery import Celery
 from flask import Flask
 from flask_cors import CORS
-
-
 import tweepy
 import datetime
 from tweepy import OAuthHandler

@@ -5,10 +5,9 @@ const AppFooter = () => {
   return (
     <CFooter>
       <div>
-        <a href="https://crypttech.com" target="_blank" rel="noopener noreferrer">
-          CRYPTTECH
+        <a href="https://www.linkedin.com/in/damlakonur/" target="_blank" rel="noopener noreferrer">
+          ADMIN
         </a>
-        <span className="ms-1">&copy; 2022 AI Labs</span>
       </div>
       <div className="ms-auto">
         {/* <span className="me-1">Powered by</span>

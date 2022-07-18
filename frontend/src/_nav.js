@@ -13,23 +13,22 @@ import {
   cilSpeedometer,
   cilUser,
   cilList,
-  cilMemory
+  cilMemory,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
     component: CNavItem,
-    name: 'Göstergeler',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    name: 'Influencer',
+    to: '/influencer',
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
-
   {
     component: CNavItem,
-    name: 'UEBA',
-    to: '/analysis/ueba',
-    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+    name: 'Stock',
+    to: '/stock',
+    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   // {
   //   component: CNavItem,
