@@ -70,6 +70,18 @@ const InfluencerPage = () => {
         addToast(error_handling(error))
       })
   }, [])
+  /* TO DO : fix parsing function */
+  const parseDate = (date) => {
+    date_str = date.split(' ')
+    day = date_str[0]
+    month = date_str[1]
+    dayN = date_str[2]
+    time = date_str[3]
+    year = date_str[5]
+    result = day + ' ' + month + ' ' + dayN + ' ' + time + ' ' + year
+    console.log(result)
+    return result
+  }
 
   return (
     <>
@@ -108,6 +120,8 @@ const InfluencerPage = () => {
           <CCard hidden={stateHidden}>
             <CCardHeader title="Influencers">Profile Details</CCardHeader>
             <CCardBody>
+              {/*
+              TO DO : Fix this
               <CWidgetStatsD
                 className="mb-3"
                 CCardImage={logo}
@@ -119,13 +133,18 @@ const InfluencerPage = () => {
                   { title: 'favorites', value: tweets[0].user.favourites_count },
                 ]}
               />
+              */}
               <CCardTitle tag="h4">{'Recent Tweets'}</CCardTitle>
               <div style={divStyle}>
                 <CRow>
                   {tweets.map((item, index) => (
-                    <CCard xs={{ cols: 1, gutter: 4 }} md={{ cols: 2 }}>
-                      {/* <CCardImage orientation="left" src={item.user.profile_image_url} /> */}
-                      <CCardBody>{item.text}</CCardBody>
+                    <CCard>
+                      <CRow>
+                        <CCardText>
+                          {'Post by @' + item.user.displayname + ' at ' + item.date}
+                        </CCardText>
+                      </CRow>
+                      <CCardBody>{item.content}</CCardBody>
                     </CCard>
                   ))}
                 </CRow>

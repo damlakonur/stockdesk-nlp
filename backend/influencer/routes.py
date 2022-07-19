@@ -6,17 +6,26 @@ import json
 from bson.json_util import dumps
 from numpy import append
 import tweepy
+import snscrape.modules.twitter as twitter
 
 influencer_bp = Blueprint('ueba_bp', __name__, template_folder='templates')
 
 
 def getTweetsFromUser(username):
     tweets = []
-
     api = current_app.config["api"]
-    tweets = api.user_timeline(
-        screen_name=username, count=15, mode='extended')
+
+    query = "from:"+username+ " -filter:links -filter:retweets -filter:replies"
+    print(query)
+    for i,tweet in enumerate(twitter.TwitterSearchScraper(query).get_items()):
+        if i>15:
+            break
+        print(tweet)
+        tweets.append(tweet)
     return tweets
+
+
+
 
 
 @influencer_bp.route('/influencer', methods=["GET"])
@@ -72,14 +81,7 @@ def get_influencer_detail():
 
         user = api.get_user(screen_name=username)
         tweets = getTweetsFromUser(username)
-        print(tweets)
-
-        tweets_list = []
-        for tweet in tweets:
-
-            tweets_list.append(tweet._json)
-
-        return {"user": user._json, "tweets":  tweets_list}
+        return {"user": user._json, "tweets":  tweets}
     except Exception as e:
         return {"status": "fail",
                 "reason": str(e), }, 500
