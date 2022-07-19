@@ -1,50 +1,64 @@
 import React from 'react'
 import {
   CCol,
+  CCard,
   CRow,
-  CProgress,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CToast,
-  CToaster,
-  CToastHeader,
-  CToastBody,
+  CCardImage,
+  CWidgetStatsD,
+  CListGroup,
+  CCardLink,
+  CCardBody,
+  CCardText,
+  CCardFooter,
+  CCardHeader,
   CInputGroup,
   CFormInput,
   CButton,
-  CAvatar,
+  CCardTitle,
 } from '@coreui/react'
-
 import CIcon from '@coreui/icons-react'
-
-import { cilPeople } from '@coreui/icons'
-
+import logo from './../../assets/images/react.jpg'
+import { cibTwitter } from '@coreui/icons'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
 
 const InfluencerPage = () => {
+  const handleClick = (e) => {
+    console.log(e)
+    axios
+      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/getdetail`, { username: e })
+      .then((res) => {
+        console.log(res)
+        setTweets(res.data.tweets)
+        setStateHidden(false)
+      })
+  }
+  const divStyle = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '600px',
+    position: 'relative',
+  }
+
+  const divStyle2 = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '800px',
+    position: 'relative',
+  }
+
+  /*get data from mongodb*/
   const [users, setUsers] = useState([])
   const [hosts, setHosts] = useState([])
   const [toast, addToast] = useState(0)
   const [username, setInfluencer] = useState('')
-  const toaster = useRef()
+  const [tweets, setTweets] = useState([])
+  const [stateHidden, setStateHidden] = useState(true)
 
-  const handleItemClick = (e) => {
-    console.log(e)
-    axios
-      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/add`, { username: e })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((error) => {
-        addToast(error_handling(error))
-      })
-  }
+  const toaster = useRef()
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_API_BASE_URL + `/influencer`)
@@ -59,50 +73,65 @@ const InfluencerPage = () => {
 
   return (
     <>
-      <CToaster ref={toaster} push={toast} placement="top-end" />
-
-      <CInputGroup className="mb-3">
-        <CFormInput
-          onChange={(e) => setInfluencer(e.target.value)}
-          placeholder="Aktör"
-          aria-label="IP adresi"
-        />
-        <CButton onClick={() => handleItemClick(username)}>Ara</CButton>
-      </CInputGroup>
       <CRow>
-        <CCol md={12}>
-          Influencer
-          <CTable align="middle" className="mb-0 border" hover responsive>
-            <CTableHead color="light">
-              <CTableRow>
-                <CTableHeaderCell>
-                  {' '}
-                  <CIcon icon={cilPeople} />
-                </CTableHeaderCell>
-                <CTableHeaderCell>User</CTableHeaderCell>
-                <CTableHeaderCell>Statistics</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {users.map((item, index) => (
-                <CTableRow v-for="item in tableItems" key={index}>
-                  <CTableDataCell>
-                    <CAvatar size="md" src={item.profile_image_url} />
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <div>{item.username}</div>
-                  </CTableDataCell>
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader title="Influencers">Influencers</CCardHeader>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                onChange={(e) => setInfluencer(e.target.value)}
+                placeholder="Search Username"
+              />
+              <CButton onClick={() => handleClick(username)}>Search</CButton>
+            </CInputGroup>
+            <CCardBody>
+              <div style={divStyle2}>
+                <CRow>
+                  {users.map((item, index) => (
+                    <CCard style={{ width: '10rem' }}>
+                      <CCardImage orientation="top" src={item.profile_image_url} />
+                      <CCardBody>
+                        <CCardText>{'@' + item.username}</CCardText>
+                      </CCardBody>
+                      <CCardBody>
+                        <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
+                      </CCardBody>
+                    </CCard>
+                  ))}
+                </CRow>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
 
-                  <CTableDataCell>
-                    <div className="clearfix">
-                      <div className="float-start"></div>
-                    </div>
-                    <CProgress thin color="danger" value={item.followers_count} />
-                  </CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
+        <CCol md={6}>
+          <CCard hidden={stateHidden}>
+            <CCardHeader title="Influencers">Profile Details</CCardHeader>
+            <CCardBody>
+              <CWidgetStatsD
+                className="mb-3"
+                CCardImage={logo}
+                icon={<CIcon className="my-4 text-white" icon={cibTwitter} height={52} />}
+                style={{ '--cui-card-cap-bg': '#00aced' }}
+                values={[
+                  { title: 'followers', value: tweets[0].user.followers_count },
+                  { title: 'tweets', value: tweets[0].user.statuses_count },
+                  { title: 'favorites', value: tweets[0].user.favourites_count },
+                ]}
+              />
+              <CCardTitle tag="h4">{'Recent Tweets'}</CCardTitle>
+              <div style={divStyle}>
+                <CRow>
+                  {tweets.map((item, index) => (
+                    <CCard xs={{ cols: 1, gutter: 4 }} md={{ cols: 2 }}>
+                      {/* <CCardImage orientation="left" src={item.user.profile_image_url} /> */}
+                      <CCardBody>{item.text}</CCardBody>
+                    </CCard>
+                  ))}
+                </CRow>
+              </div>
+            </CCardBody>
+          </CCard>
         </CCol>
       </CRow>
     </>
