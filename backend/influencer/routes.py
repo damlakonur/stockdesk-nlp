@@ -12,14 +12,10 @@ influencer_bp = Blueprint('ueba_bp', __name__, template_folder='templates')
 
 def getTweetsFromUser(username):
     tweets = []
-    # try:
+
     api = current_app.config["api"]
     tweets = api.user_timeline(
         screen_name=username, count=15, mode='extended')
-
-    # except Exception as e:
-    #     print(e)
-    #     pass
     return tweets
 
 
