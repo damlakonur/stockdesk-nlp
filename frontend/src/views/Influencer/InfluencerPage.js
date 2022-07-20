@@ -5,6 +5,7 @@ import {
   CRow,
   CCardImage,
   CWidgetStatsD,
+  CAvatar,
   CListGroup,
   CCardLink,
   CCardBody,
@@ -22,6 +23,7 @@ import { cibTwitter } from '@coreui/icons'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
+import { margin } from '@mui/system'
 
 const InfluencerPage = () => {
   const handleClick = (e) => {
@@ -103,7 +105,7 @@ const InfluencerPage = () => {
               <div style={divStyle2}>
                 <CRow>
                   {users.map((item, index) => (
-                    <CCard style={{ width: '10rem' }}>
+                    <CCard style={{ width: '14rem', margin: '15px' }}>
                       <CCardImage orientation="top" src={item.profile_image_url} />
                       <CCardBody>
                         <CCardText>{'@' + item.username}</CCardText>
@@ -135,23 +137,29 @@ const InfluencerPage = () => {
                 ]}
               />
 
-              <CCardTitle tag="h4">{'Recent Tweets'}</CCardTitle>
+              <CCardTitle>{'Recent Tweets'}</CCardTitle>
               <div style={divStyle}>
                 <CRow>
                   {tweets.map((item, index) => (
-                    <CCard>
-                      <CRow xs={{ gutterX: 5 }}>
-                        <CCardText textColor={'blue'}>
-                          <p>
-                            <strong>Post by @</strong>
-                            {item.user.username}
-                            <strong> at </strong>
-                            {item.date}
-                          </p>
-                        </CCardText>
+                    <CCard style={{ width: '32rem', padding: '15px', position: 'center' }}>
+                      <CRow>
+                        <CCol xs={2}>
+                          {/* TODO: fix profile url */}
+                          <CAvatar size="xl" src={logo} />
+                        </CCol>
+                        <CCol xs={9}>
+                          <CCardText textColor={'blue'}>
+                            {item.user.displayname}
+                            <p>
+                              <strong> Post by @</strong>
+                              {item.user.username}
+                              <strong> at </strong>
+                              {item.date}
+                            </p>
+                          </CCardText>
+                        </CCol>
                       </CRow>
                       <CCardBody>{item.content}</CCardBody>
-                      <CCardImage src={item.image_url} />
                     </CCard>
                   ))}
                 </CRow>
