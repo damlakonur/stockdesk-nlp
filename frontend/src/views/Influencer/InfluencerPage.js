@@ -31,32 +31,21 @@ const InfluencerPage = () => {
       .then((res) => {
         console.log(res)
         setTweets(res.data.tweets)
+        setFavCount(res.data.user.favourites_count)
+        setStatusCount(res.data.user.statuses_count)
+        setFollowerCount(res.data.user.followers_count)
         setStateHidden(false)
       })
   }
-  const divStyle = {
-    overflowY: 'scroll',
-    width: '100%',
-    float: 'left',
-    height: '600px',
-    position: 'relative',
-  }
-
-  const divStyle2 = {
-    overflowY: 'scroll',
-    width: '100%',
-    float: 'left',
-    height: '800px',
-    position: 'relative',
-  }
-
   /*get data from mongodb*/
   const [users, setUsers] = useState([])
-  const [hosts, setHosts] = useState([])
   const [toast, addToast] = useState(0)
   const [username, setInfluencer] = useState('')
   const [tweets, setTweets] = useState([])
   const [stateHidden, setStateHidden] = useState(true)
+  const [favCount, setFavCount] = useState(0)
+  const [statusCount, setStatusCount] = useState(0)
+  const [followerCount, setFollowerCount] = useState(0)
 
   const toaster = useRef()
   useEffect(() => {
@@ -81,6 +70,20 @@ const InfluencerPage = () => {
     result = day + ' ' + month + ' ' + dayN + ' ' + time + ' ' + year
     console.log(result)
     return result
+  }
+  const divStyle = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '600px',
+  }
+
+  const divStyle2 = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '800px',
+    position: 'relative',
   }
 
   return (
@@ -116,35 +119,39 @@ const InfluencerPage = () => {
           </CCard>
         </CCol>
 
-        <CCol md={6}>
+        <CCol>
           <CCard hidden={stateHidden}>
             <CCardHeader title="Influencers">Profile Details</CCardHeader>
             <CCardBody>
-              {/*
-              TO DO : Fix this
               <CWidgetStatsD
                 className="mb-3"
                 CCardImage={logo}
                 icon={<CIcon className="my-4 text-white" icon={cibTwitter} height={52} />}
                 style={{ '--cui-card-cap-bg': '#00aced' }}
                 values={[
-                  { title: 'followers', value: tweets[0].user.followers_count },
-                  { title: 'tweets', value: tweets[0].user.statuses_count },
-                  { title: 'favorites', value: tweets[0].user.favourites_count },
+                  { title: 'followers', value: followerCount },
+                  { title: 'tweets', value: statusCount },
+                  { title: 'favorites', value: favCount },
                 ]}
               />
-              */}
+
               <CCardTitle tag="h4">{'Recent Tweets'}</CCardTitle>
               <div style={divStyle}>
                 <CRow>
                   {tweets.map((item, index) => (
                     <CCard>
-                      <CRow>
-                        <CCardText>
-                          {'Post by @' + item.user.displayname + ' at ' + item.date}
+                      <CRow xs={{ gutterX: 5 }}>
+                        <CCardText textColor={'blue'}>
+                          <p>
+                            <strong>Post by @</strong>
+                            {item.user.username}
+                            <strong> at </strong>
+                            {item.date}
+                          </p>
                         </CCardText>
                       </CRow>
                       <CCardBody>{item.content}</CCardBody>
+                      <CCardImage src={item.image_url} />
                     </CCard>
                   ))}
                 </CRow>
