@@ -33,9 +33,9 @@ const InfluencerPage = () => {
       .then((res) => {
         console.log(res)
         setTweets(res.data.tweets)
-        setFavCount(res.data.user.favourites_count)
-        setStatusCount(res.data.user.statuses_count)
-        setFollowerCount(res.data.user.followers_count)
+        setFavCount(res.data.user.favouritesCount)
+        setStatusCount(res.data.user.statusesCount)
+        setFollowerCount(res.data.user.followersCount)
         setStateHidden(false)
       })
   }
@@ -106,10 +106,9 @@ const InfluencerPage = () => {
                 <CRow>
                   {users.map((item, index) => (
                     <CCard style={{ width: '14rem', margin: '15px' }}>
-                      <CCardImage orientation="top" src={item.profile_image_url} />
-                      <CCardBody>
-                        <CCardText>{'@' + item.username}</CCardText>
-                      </CCardBody>
+                      <CCardImage orientation="top" src={item.profileImageUrl} />
+                      <CCardText>{item.displayname}</CCardText>
+                      <CCardBody></CCardBody>
                       <CCardBody>
                         <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
                       </CCardBody>
@@ -133,7 +132,7 @@ const InfluencerPage = () => {
                 values={[
                   { title: 'followers', value: followerCount },
                   { title: 'tweets', value: statusCount },
-                  { title: 'favorites', value: favCount },
+                  { title: 'favourites', value: favCount },
                 ]}
               />
 

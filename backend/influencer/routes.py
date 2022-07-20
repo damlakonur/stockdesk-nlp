@@ -13,14 +13,10 @@ influencer_bp = Blueprint('ueba_bp', __name__, template_folder='templates')
 
 def getTweetsFromUser(username):
     tweets = []
-    api = current_app.config["api"]
-
     query = "from:"+username+ " -filter:links -filter:retweets -filter:replies"
-    print(query)
     for i,tweet in enumerate(twitter.TwitterSearchScraper(query).get_items()):
         if i>15:
             break
-        print(tweet)
         tweets.append(tweet)
     return tweets
 
@@ -31,27 +27,24 @@ def getTweetsFromUser(username):
 @influencer_bp.route('/influencer', methods=["GET"])
 def get_influencer():
     try:
-        api = current_app.config["api"]
-
         influencer = current_app.config["db_conn"]["influencer"]
         cursor = list(influencer.find({}))
+        influencers = []
 
         for influencer in cursor:
             try:
-                user = api.get_user(screen_name=influencer["username"])
-                influencer["followers_count"] = user.followers_count
-                influencer["profile_image_url"] = user.profile_image_url[:-
-                                                                         10] + "400x400.jpg"
-
+                user1 = twitter.TwitterUserScraper(influencer["username"])._get_entity()
+                user1.profileImageUrl = user1.profileImageUrl[:-10] + "400x400.jpg"
+                influencers.append(user1)
+                                                                        
             except Exception as e:
                 print(e)
-                influencer["followers_count"] = 65
-                influencer["profile_image_url"] = "https://pbs.twimg.com/profile_images/1505298408944377861/HERaUhWJ_400x400.jpg"
+                user1.followersCount = 65
+                user1.profileImageUrl = "https://pbs.twimg.com/profile_images/1505298408944377861/HERaUhWJ_400x400.jpg"
                 pass
 
-        json_data = json.loads(dumps(cursor))
 
-        return {"influencers": json_data}
+        return {"influencers": influencers}
     except Exception as e:
         print(e)
         return {"status": "fail",
@@ -75,13 +68,10 @@ def add_influencer():
 @influencer_bp.route('/influencer/getdetail', methods=["POST"])
 def get_influencer_detail():
     try:
-
-        api = current_app.config["api"]
         username = request.json["username"]
-
-        user = api.get_user(screen_name=username)
+        user = twitter.TwitterUserScraper(username)._get_entity()
         tweets = getTweetsFromUser(username)
-        return {"user": user._json, "tweets":  tweets}
+        return {"user": user, "tweets":  tweets}
     except Exception as e:
         return {"status": "fail",
                 "reason": str(e), }, 500
