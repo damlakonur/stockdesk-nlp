@@ -83,7 +83,7 @@ const AdminPage = () => {
               {users.map((item, index) => (
                 <CTableRow v-for="item in tableItems" key={index}>
                   <CTableDataCell>
-                    <CAvatar size="md" src={item.profile_image_url} />
+                    <CAvatar size="md" src={item.profileImageUrl} />
                   </CTableDataCell>
                   <CTableDataCell>
                     <div>{item.username}</div>
@@ -93,7 +93,7 @@ const AdminPage = () => {
                     <div className="clearfix">
                       <div className="float-start"></div>
                     </div>
-                    <CProgress thin color="danger" value={item.followers_count} />
+                    <CProgress thin color="danger" value={item.followersCount} />
                   </CTableDataCell>
                 </CTableRow>
               ))}
