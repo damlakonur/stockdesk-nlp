@@ -1,50 +1,53 @@
 import React from 'react'
 import {
   CCol,
+  CCard,
   CRow,
-  CProgress,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CToast,
-  CToaster,
-  CToastHeader,
-  CToastBody,
+  CCardImage,
+  CWidgetStatsD,
+  CListGroup,
+  CCardLink,
+  CCardBody,
+  CCardText,
+  CCardFooter,
+  CCardHeader,
   CInputGroup,
   CFormInput,
   CButton,
-  CAvatar,
+  CCardTitle,
 } from '@coreui/react'
-
 import CIcon from '@coreui/icons-react'
-
-import { cilPeople } from '@coreui/icons'
-
+import logo from './../../assets/images/react.jpg'
+import { cibTwitter } from '@coreui/icons'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
 
 const InfluencerPage = () => {
-  const [users, setUsers] = useState([])
-  const [hosts, setHosts] = useState([])
-  const [toast, addToast] = useState(0)
-  const [username, setInfluencer] = useState('')
-  const toaster = useRef()
-
-  const handleItemClick = (e) => {
+  const handleClick = (e) => {
     console.log(e)
     axios
-      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/add`, { username: e })
+      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/getdetail`, { username: e })
       .then((res) => {
         console.log(res)
-      })
-      .catch((error) => {
-        addToast(error_handling(error))
+        setTweets(res.data.tweets)
+        setFavCount(res.data.user.favourites_count)
+        setStatusCount(res.data.user.statuses_count)
+        setFollowerCount(res.data.user.followers_count)
+        setStateHidden(false)
       })
   }
+  /*get data from mongodb*/
+  const [users, setUsers] = useState([])
+  const [toast, addToast] = useState(0)
+  const [username, setInfluencer] = useState('')
+  const [tweets, setTweets] = useState([])
+  const [stateHidden, setStateHidden] = useState(true)
+  const [favCount, setFavCount] = useState(0)
+  const [statusCount, setStatusCount] = useState(0)
+  const [followerCount, setFollowerCount] = useState(0)
+
+  const toaster = useRef()
   useEffect(() => {
     axios
       .get(process.env.REACT_APP_API_BASE_URL + `/influencer`)
@@ -56,53 +59,105 @@ const InfluencerPage = () => {
         addToast(error_handling(error))
       })
   }, [])
+  /* TO DO : fix parsing function */
+  const parseDate = (date) => {
+    date_str = date.split(' ')
+    day = date_str[0]
+    month = date_str[1]
+    dayN = date_str[2]
+    time = date_str[3]
+    year = date_str[5]
+    result = day + ' ' + month + ' ' + dayN + ' ' + time + ' ' + year
+    console.log(result)
+    return result
+  }
+  const divStyle = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '600px',
+  }
+
+  const divStyle2 = {
+    overflowY: 'scroll',
+    width: '100%',
+    float: 'left',
+    height: '800px',
+    position: 'relative',
+  }
 
   return (
     <>
-      <CToaster ref={toaster} push={toast} placement="top-end" />
-
-      <CInputGroup className="mb-3">
-        <CFormInput
-          onChange={(e) => setInfluencer(e.target.value)}
-          placeholder="Aktör"
-          aria-label="IP adresi"
-        />
-        <CButton onClick={() => handleItemClick(username)}>Ara</CButton>
-      </CInputGroup>
       <CRow>
-        <CCol md={12}>
-          Influencer
-          <CTable align="middle" className="mb-0 border" hover responsive>
-            <CTableHead color="light">
-              <CTableRow>
-                <CTableHeaderCell>
-                  {' '}
-                  <CIcon icon={cilPeople} />
-                </CTableHeaderCell>
-                <CTableHeaderCell>User</CTableHeaderCell>
-                <CTableHeaderCell>Statistics</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {users.map((item, index) => (
-                <CTableRow v-for="item in tableItems" key={index}>
-                  <CTableDataCell>
-                    <CAvatar size="md" src={item.profile_image_url} />
-                  </CTableDataCell>
-                  <CTableDataCell>
-                    <div>{item.username}</div>
-                  </CTableDataCell>
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader title="Influencers">Influencers</CCardHeader>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                onChange={(e) => setInfluencer(e.target.value)}
+                placeholder="Search Username"
+              />
+              <CButton onClick={() => handleClick(username)}>Search</CButton>
+            </CInputGroup>
+            <CCardBody>
+              <div style={divStyle2}>
+                <CRow>
+                  {users.map((item, index) => (
+                    <CCard style={{ width: '10rem' }}>
+                      <CCardImage orientation="top" src={item.profile_image_url} />
+                      <CCardBody>
+                        <CCardText>{'@' + item.username}</CCardText>
+                      </CCardBody>
+                      <CCardBody>
+                        <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
+                      </CCardBody>
+                    </CCard>
+                  ))}
+                </CRow>
+              </div>
+            </CCardBody>
+          </CCard>
+        </CCol>
 
-                  <CTableDataCell>
-                    <div className="clearfix">
-                      <div className="float-start"></div>
-                    </div>
-                    <CProgress thin color="danger" value={item.followers_count} />
-                  </CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
+        <CCol>
+          <CCard hidden={stateHidden}>
+            <CCardHeader title="Influencers">Profile Details</CCardHeader>
+            <CCardBody>
+              <CWidgetStatsD
+                className="mb-3"
+                CCardImage={logo}
+                icon={<CIcon className="my-4 text-white" icon={cibTwitter} height={52} />}
+                style={{ '--cui-card-cap-bg': '#00aced' }}
+                values={[
+                  { title: 'followers', value: followerCount },
+                  { title: 'tweets', value: statusCount },
+                  { title: 'favorites', value: favCount },
+                ]}
+              />
+
+              <CCardTitle tag="h4">{'Recent Tweets'}</CCardTitle>
+              <div style={divStyle}>
+                <CRow>
+                  {tweets.map((item, index) => (
+                    <CCard>
+                      <CRow xs={{ gutterX: 5 }}>
+                        <CCardText textColor={'blue'}>
+                          <p>
+                            <strong>Post by @</strong>
+                            {item.user.username}
+                            <strong> at </strong>
+                            {item.date}
+                          </p>
+                        </CCardText>
+                      </CRow>
+                      <CCardBody>{item.content}</CCardBody>
+                      <CCardImage src={item.image_url} />
+                    </CCard>
+                  ))}
+                </CRow>
+              </div>
+            </CCardBody>
+          </CCard>
         </CCol>
       </CRow>
     </>

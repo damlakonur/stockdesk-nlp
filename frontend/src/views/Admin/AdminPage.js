@@ -27,7 +27,7 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
 
-const StockPage = () => {
+const AdminPage = () => {
   const [users, setUsers] = useState([])
   const [hosts, setHosts] = useState([])
   const [toast, addToast] = useState(0)
@@ -105,4 +105,4 @@ const StockPage = () => {
   )
 }
 
-export default StockPage
+export default AdminPage
