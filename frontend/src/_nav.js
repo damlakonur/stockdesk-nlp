@@ -20,8 +20,8 @@ import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 const _nav = [
   {
     component: CNavItem,
-    name: 'Influencer',
-    to: '/influencer',
+    name: 'Admin',
+    to: '/admin',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
   {
@@ -29,6 +29,12 @@ const _nav = [
     name: 'Stock',
     to: '/stock',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Influencer',
+    to: '/influencer',
+    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
   },
   // {
   //   component: CNavItem,
