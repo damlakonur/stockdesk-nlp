@@ -71,6 +71,7 @@ def get_influencer_detail():
         username = request.json["username"]
         user = twitter.TwitterUserScraper(username)._get_entity()
         tweets = getTweetsFromUser(username)
+        user.profileImageUrl = user.profileImageUrl[:-10] + "400x400.jpg"
         return {"user": user, "tweets":  tweets}
     except Exception as e:
         return {"status": "fail",
