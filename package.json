@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "react-tweet-embed": "^2.0.0",
+    "react-twitter-embed": "^4.0.4",
+    "tweet-embed": "^0.1.0"
+  }
+}
