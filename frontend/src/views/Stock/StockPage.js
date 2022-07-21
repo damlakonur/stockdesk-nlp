@@ -22,35 +22,36 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import { cilPeople } from '@coreui/icons'
+import logo from './../../assets/images/react.jpg'
 
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
 
 const StockPage = () => {
-  const [users, setUsers] = useState([])
-  const [hosts, setHosts] = useState([])
   const [toast, addToast] = useState(0)
-  const [username, setInfluencer] = useState('')
+  const [symbol, setSymbol] = useState('')
+  const [stocks, setStocks] = useState([])
   const toaster = useRef()
 
   const handleItemClick = (e) => {
     console.log(e)
     axios
-      .post(process.env.REACT_APP_API_BASE_URL + `/influencer/add`, { username: e })
+      .post(process.env.REACT_APP_API_BASE_URL + `/stock/add`, { symbol: e })
       .then((res) => {
         console.log(res)
       })
       .catch((error) => {
+        console.log(e)
         addToast(error_handling(error))
       })
   }
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_API_BASE_URL + `/influencer`)
+      .get(process.env.REACT_APP_API_BASE_URL + `/stock`)
       .then((res) => {
         console.log(res.data)
-        setUsers(res.data.influencers)
+        setStocks(res.data.stocks)
       })
       .catch((error) => {
         addToast(error_handling(error))
@@ -62,12 +63,12 @@ const StockPage = () => {
       <CToaster ref={toaster} push={toast} placement="top-end" />
 
       <CInputGroup className="mb-3">
-        <CFormInput onChange={(e) => setInfluencer(e.target.value)} placeholder="Username" />
-        <CButton onClick={() => handleItemClick(username)}>Ara</CButton>
+        <CFormInput onChange={(e) => setSymbol(e.target.value)} placeholder="Username" />
+        <CButton onClick={() => handleItemClick(symbol)}>Ara</CButton>
       </CInputGroup>
       <CRow>
         <CCol md={12}>
-          Influencer
+          Stock Symbol
           <CTable align="middle" className="mb-0 border" hover responsive>
             <CTableHead color="light">
               <CTableRow>
@@ -80,20 +81,20 @@ const StockPage = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {users.map((item, index) => (
+              {stocks.map((item, index) => (
                 <CTableRow v-for="item in tableItems" key={index}>
                   <CTableDataCell>
-                    <CAvatar size="md" src={item.profile_image_url} />
+                    <CAvatar size="md" src={logo} />
                   </CTableDataCell>
                   <CTableDataCell>
-                    <div>{item.username}</div>
+                    <div>{'dsdfsdfsdfsdfs'}</div>
                   </CTableDataCell>
 
                   <CTableDataCell>
                     <div className="clearfix">
                       <div className="float-start"></div>
                     </div>
-                    <CProgress thin color="danger" value={item.followers_count} />
+                    <CProgress thin color="danger" value={55} />
                   </CTableDataCell>
                 </CTableRow>
               ))}

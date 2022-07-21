@@ -8,7 +8,7 @@ from numpy import append
 import tweepy
 import snscrape.modules.twitter as twitter
 
-influencer_bp = Blueprint('ueba_bp', __name__, template_folder='templates')
+influencer_bp = Blueprint('influencer_bp', __name__, template_folder='templates')
 
 
 def getTweetsFromUser(username):
