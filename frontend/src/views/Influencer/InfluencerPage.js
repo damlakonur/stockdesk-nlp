@@ -6,11 +6,8 @@ import {
   CCardImage,
   CWidgetStatsD,
   CAvatar,
-  CListGroup,
-  CCardLink,
   CCardBody,
   CCardText,
-  CCardFooter,
   CCardHeader,
   CInputGroup,
   CFormInput,
@@ -23,7 +20,6 @@ import { cibTwitter } from '@coreui/icons'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { error_handling } from 'src/error_handling'
-import { margin } from '@mui/system'
 
 const InfluencerPage = () => {
   const handleClick = (e) => {
@@ -33,13 +29,13 @@ const InfluencerPage = () => {
       .then((res) => {
         console.log(res)
         setTweets(res.data.tweets)
-        setFavCount(res.data.user.favourites_count)
-        setStatusCount(res.data.user.statuses_count)
-        setFollowerCount(res.data.user.followers_count)
+        setUser(res.data.user)
+        setFavCount(res.data.user.favouritesCount)
+        setStatusCount(res.data.user.statusesCount)
+        setFollowerCount(res.data.user.followersCount)
         setStateHidden(false)
       })
   }
-  /*get data from mongodb*/
   const [users, setUsers] = useState([])
   const [toast, addToast] = useState(0)
   const [username, setInfluencer] = useState('')
@@ -48,6 +44,7 @@ const InfluencerPage = () => {
   const [favCount, setFavCount] = useState(0)
   const [statusCount, setStatusCount] = useState(0)
   const [followerCount, setFollowerCount] = useState(0)
+  const [user, setUser] = useState([])
 
   const toaster = useRef()
   useEffect(() => {
@@ -106,10 +103,9 @@ const InfluencerPage = () => {
                 <CRow>
                   {users.map((item, index) => (
                     <CCard style={{ width: '14rem', margin: '15px' }}>
-                      <CCardImage orientation="top" src={item.profile_image_url} />
-                      <CCardBody>
-                        <CCardText>{'@' + item.username}</CCardText>
-                      </CCardBody>
+                      <CCardImage orientation="top" src={item.profileImageUrl} />
+                      <CCardText>{item.displayname}</CCardText>
+                      <CCardBody></CCardBody>
                       <CCardBody>
                         <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
                       </CCardBody>
@@ -133,7 +129,7 @@ const InfluencerPage = () => {
                 values={[
                   { title: 'followers', value: followerCount },
                   { title: 'tweets', value: statusCount },
-                  { title: 'favorites', value: favCount },
+                  { title: 'favourites', value: favCount },
                 ]}
               />
 
@@ -144,8 +140,7 @@ const InfluencerPage = () => {
                     <CCard style={{ width: '32rem', padding: '15px', position: 'center' }}>
                       <CRow>
                         <CCol xs={2}>
-                          {/* TODO: fix profile url */}
-                          <CAvatar size="xl" src={logo} />
+                          <CAvatar size="xl" src={user.profileImageUrl} />
                         </CCol>
                         <CCol xs={9}>
                           <CCardText textColor={'blue'}>
@@ -171,5 +166,4 @@ const InfluencerPage = () => {
     </>
   )
 }
-
 export default InfluencerPage
