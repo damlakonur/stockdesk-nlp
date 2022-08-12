@@ -15,6 +15,7 @@ import pandas as pd
 
 from influencer.routes import influencer_bp
 from stock.stockRoutes import stock_bp
+from model.modelRoutes import model_bp
 
 
 def getAuth():
@@ -40,6 +41,7 @@ CORS(app)
 
 app.register_blueprint(influencer_bp)
 app.register_blueprint(stock_bp)
+app.register_blueprint(model_bp)
 
 
 app.config["db_conn"] = pymongo.MongoClient(

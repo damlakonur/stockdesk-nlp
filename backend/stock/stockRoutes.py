@@ -72,3 +72,4 @@ def delete_stock():
         print(e)
         return {"status": "fail",
                 "reason": str(e), }, 500
+
