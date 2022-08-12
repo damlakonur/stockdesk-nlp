@@ -13,6 +13,11 @@ import {
   CFormInput,
   CButton,
   CCardTitle,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import logo from './../../assets/images/react.jpg'
@@ -45,6 +50,8 @@ const InfluencerPage = () => {
   const [statusCount, setStatusCount] = useState(0)
   const [followerCount, setFollowerCount] = useState(0)
   const [user, setUser] = useState([])
+  const [modal, setModal] = useState(false)
+  const [modalTweet, setModalTweet] = useState('')
 
   const toaster = useRef()
   useEffect(() => {
@@ -84,9 +91,29 @@ const InfluencerPage = () => {
     height: '800px',
     position: 'relative',
   }
+  const handleDetailClick = (e) => {
+    console.log(e)
 
+    setModal(true)
+    setModalTweet(e)
+  }
   return (
+
     <>
+      <CModal
+
+        visible={modal}
+      >
+        <CModalHeader>
+          <CModalTitle>React Modal title</CModalTitle>
+        </CModalHeader>
+        <CModalBody>{modalTweet}</CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setModal(false)} >Close</CButton>
+          <CButton color="primary" >Save changes</CButton>
+        </CModalFooter>
+      </CModal>
+
       <CRow>
         <CCol md={6}>
           <CCard>
@@ -139,6 +166,7 @@ const InfluencerPage = () => {
                   {tweets.map((item, index) => (
                     <CCard style={{ width: '32rem', padding: '15px', position: 'center' }}>
                       <CRow>
+                        <CButton onClick={() => handleDetailClick(item.content)}>Detay ver</CButton>
                         <CCol xs={2}>
                           <CAvatar size="xl" src={user.profileImageUrl} />
                         </CCol>
