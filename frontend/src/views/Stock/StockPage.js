@@ -11,8 +11,6 @@ import {
   CTableRow,
   CToast,
   CToaster,
-  CToastHeader,
-  CToastBody,
   CInputGroup,
   CFormInput,
   CButton,
