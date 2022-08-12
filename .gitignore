@@ -2,6 +2,7 @@ mongo-data
 *__pycache__*
 .DS_Store
 node_modules/react-dom/client.js
+backend/model/models
 /node_modules
 package.json
 package-lock.json
