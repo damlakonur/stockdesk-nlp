@@ -102,6 +102,7 @@ def jsonize(output):
 @model_bp.route('/model/getResult', methods=["POST"])
 def get_prediction():
     tahmin = []
+    out = []
     try:
         tweet = request.get_json()['content']
         output1 = model1(tweet)
@@ -127,12 +128,13 @@ def get_prediction():
                         tahmin.append(parsedOut2[idx]['word'])
             for i in range(len(tahmin)):
                 output4 = model4(tahmin[i])
+                out.append(output4[0])
                 print(output4)
             result = 'Tahmin'
             status = 'SUCCESS'
             modelOut2 = parsedOut1
             modelOut3 = parsedOut2
-            modelOut4 = output4
+            modelOut4 = out
         else:
             result = 'Hata'
             status = 'ERROR'

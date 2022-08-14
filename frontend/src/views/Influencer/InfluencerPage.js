@@ -49,6 +49,7 @@ const InfluencerPage = () => {
   const [modelOut2, setModelOut2] = useState([])
   const [modelOut3, setModelOut3] = useState([])
   const [modelOut4, setModelOut4] = useState([])
+  const [isClaim, setIsClaim] = useState(false)
 
   const handleClick = (e) => {
     console.log(e)
@@ -72,6 +73,15 @@ const InfluencerPage = () => {
         setModal(true)
         setModalTweet(e)
         setResult(res.data.result)
+        console.log(result)
+        console.log(res.data.result)
+        if (res.data.result === 'Tahmin') {
+          setIsClaim(true)
+          console.log(isClaim)
+        } else {
+          setIsClaim(false)
+          console.log(isClaim)
+        }
         setModelOut2(res.data.modelOut2)
         setModelOut3(res.data.modelOut3)
         setModelOut4(res.data.modelOut4)
@@ -118,9 +128,18 @@ const InfluencerPage = () => {
         </CModalHeader>
         <CModalBody>
           {modalTweet}
-
           <CRow>
-            <CTable striped hover>
+            <CTable>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>Model Output : {result}</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+            </CTable>
+          </CRow>
+
+          <CRow visible={isClaim}>
+            <CTable visible={isClaim} striped hover>
               <CTableHead>
                 <CTableRow>
                   <CTableHeaderCell scope="col">
@@ -175,25 +194,28 @@ const InfluencerPage = () => {
       <CRow>
         <CCol md={6}>
           <CCard>
-            <CCardHeader title="Influencers">Influencers</CCardHeader>
-            <CInputGroup className="mb-3">
-              <CFormInput
-                onChange={(e) => setInfluencer(e.target.value)}
-                placeholder="Search Username"
-              />
-              <CButton onClick={() => handleClick(username)}>Search</CButton>
-            </CInputGroup>
+            <CCardHeader align="center" title="Influencers">
+              <h3>Influencers</h3>
+            </CCardHeader>
             <CCardBody>
               <div style={divStyle2}>
-                <CRow>
+                <CRow xs={{ cols: 1 }} md={{ cols: 3 }} className="g-4">
                   {users.map((item, index) => (
-                    <CCard style={{ width: '14rem', margin: '15px' }}>
-                      <CCardImage orientation="top" src={item.profileImageUrl} />
-                      <CCardText>{item.displayname}</CCardText>
-                      <CCardBody></CCardBody>
+                    <CCard className="h-100" style={{ width: '14rem', margin: '10px' }}>
+                      <CCardImage src={item.profileImageUrl} />
+
                       <CCardBody>
-                        <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
+                        <CCardText align="center">
+                          <strong>{item.displayname}</strong>
+                        </CCardText>
                       </CCardBody>
+                      <CButton
+                        color="dark"
+                        onClick={() => handleClick(item.username)}
+                        variant="ghost"
+                      >
+                        Detail
+                      </CButton>
                     </CCard>
                   ))}
                 </CRow>
@@ -204,7 +226,9 @@ const InfluencerPage = () => {
 
         <CCol>
           <CCard hidden={stateHidden}>
-            <CCardHeader title="Influencers">Profile Details</CCardHeader>
+            <CCardHeader align="center" title="Influencers">
+              <h3>Profile Details</h3>
+            </CCardHeader>
             <CCardBody>
               <CWidgetStatsD
                 className="mb-3"
@@ -240,7 +264,13 @@ const InfluencerPage = () => {
                         </CCol>
                       </CRow>
                       <CCardBody>{item.content}</CCardBody>
-                      <CButton onClick={() => handleDetailClick(item.content)}>Analyse</CButton>
+                      <CButton
+                        color="info"
+                        onClick={() => handleDetailClick(item.content)}
+                        variant="outline"
+                      >
+                        Analyse
+                      </CButton>
                     </CCard>
                   ))}
                 </CRow>
