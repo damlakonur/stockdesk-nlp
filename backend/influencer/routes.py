@@ -39,8 +39,7 @@ def get_influencer():
                                                                         
             except Exception as e:
                 print(e)
-                user1.followersCount = 65
-                user1.profileImageUrl = "https://pbs.twimg.com/profile_images/1505298408944377861/HERaUhWJ_400x400.jpg"
+
                 pass
 
 
@@ -59,7 +58,19 @@ def add_influencer():
         influencer = db["influencer"]
         influencer.insert_one(request.json)
 
-        return {"influencer": "aslşdkaşsldka"}
+        return {"status": "success"}
+    except Exception as e:
+        return {"status": "fail",
+                "reason": str(e), }, 500
+@influencer_bp.route('/influencer/delete', methods=["POST"])
+def delete_influencer():
+    try:
+        print(request.json["username"])
+        db = current_app.config["db_conn"]
+        influencer = db["influencer"]
+        influencer.delete_one(request.json)
+
+        return {"status": "success"}
     except Exception as e:
         return {"status": "fail",
                 "reason": str(e), }, 500
