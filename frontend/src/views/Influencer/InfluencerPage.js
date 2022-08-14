@@ -17,7 +17,14 @@ import {
   CModalHeader,
   CModalTitle,
   CModalBody,
-  CModalFooter
+  CModalFooter,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+  CTableFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import logo from './../../assets/images/react.jpg'
@@ -27,6 +34,23 @@ import axios from 'axios'
 import { error_handling } from 'src/error_handling'
 
 const InfluencerPage = () => {
+  const [users, setUsers] = useState([])
+  const [toast, addToast] = useState(0)
+  const [username, setInfluencer] = useState('')
+  const [tweets, setTweets] = useState([])
+  const [stateHidden, setStateHidden] = useState(true)
+  const [favCount, setFavCount] = useState(0)
+  const [statusCount, setStatusCount] = useState(0)
+  const [followerCount, setFollowerCount] = useState(0)
+  const [user, setUser] = useState([])
+  const [modal, setModal] = useState(false)
+  const [modalTweet, setModalTweet] = useState('')
+  const [result, setResult] = useState('')
+  const [modelOut2, setModelOut2] = useState([])
+  const [modelOut3, setModelOut3] = useState([])
+  const [modelOut4, setModelOut4] = useState([])
+  const [isClaim, setIsClaim] = useState(false)
+
   const handleClick = (e) => {
     console.log(e)
     axios
@@ -41,17 +65,33 @@ const InfluencerPage = () => {
         setStateHidden(false)
       })
   }
-  const [users, setUsers] = useState([])
-  const [toast, addToast] = useState(0)
-  const [username, setInfluencer] = useState('')
-  const [tweets, setTweets] = useState([])
-  const [stateHidden, setStateHidden] = useState(true)
-  const [favCount, setFavCount] = useState(0)
-  const [statusCount, setStatusCount] = useState(0)
-  const [followerCount, setFollowerCount] = useState(0)
-  const [user, setUser] = useState([])
-  const [modal, setModal] = useState(false)
-  const [modalTweet, setModalTweet] = useState('')
+  const handleDetailClick = (e) => {
+    console.log(e)
+    axios
+      .post(process.env.REACT_APP_API_BASE_URL + `/model/getResult`, { content: e })
+      .then((res) => {
+        setModal(true)
+        setModalTweet(e)
+        setResult(res.data.result)
+        console.log(result)
+        console.log(res.data.result)
+        if (res.data.result === 'Tahmin') {
+          setIsClaim(true)
+          console.log(isClaim)
+        } else {
+          setIsClaim(false)
+          console.log(isClaim)
+        }
+        setModelOut2(res.data.modelOut2)
+        setModelOut3(res.data.modelOut3)
+        setModelOut4(res.data.modelOut4)
+        console.log(modalTweet)
+        console.log(modal)
+      })
+      .catch((error) => {
+        addToast(error_handling(error))
+      })
+  }
 
   const toaster = useRef()
   useEffect(() => {
@@ -65,18 +105,6 @@ const InfluencerPage = () => {
         addToast(error_handling(error))
       })
   }, [])
-  /* TO DO : fix parsing function */
-  const parseDate = (date) => {
-    date_str = date.split(' ')
-    day = date_str[0]
-    month = date_str[1]
-    dayN = date_str[2]
-    time = date_str[3]
-    year = date_str[5]
-    result = day + ' ' + month + ' ' + dayN + ' ' + time + ' ' + year
-    console.log(result)
-    return result
-  }
   const divStyle = {
     overflowY: 'scroll',
     width: '100%',
@@ -91,51 +119,103 @@ const InfluencerPage = () => {
     height: '800px',
     position: 'relative',
   }
-  const handleDetailClick = (e) => {
-    console.log(e)
 
-    setModal(true)
-    setModalTweet(e)
-  }
   return (
-
     <>
-      <CModal
-
-        visible={modal}
-      >
+      <CModal size="lg" visible={modal} onClose={() => setModal(false)}>
         <CModalHeader>
-          <CModalTitle>React Modal title</CModalTitle>
+          <CModalTitle>NLP Pipeline Output</CModalTitle>
         </CModalHeader>
-        <CModalBody>{modalTweet}</CModalBody>
+        <CModalBody>
+          {modalTweet}
+          <CRow>
+            <CTable>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell>Model Output : {result}</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+            </CTable>
+          </CRow>
+
+          <CRow visible={isClaim}>
+            <CTable visible={isClaim} striped hover>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell scope="col">
+                    <strong>Entity</strong>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <strong>Word</strong>
+                  </CTableHeaderCell>
+                  <CTableHeaderCell scope="col">
+                    <strong>Score</strong>
+                  </CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              {modelOut2.map((item, index) => (
+                <CTableBody striped hover>
+                  <CTableRow>
+                    <CTableDataCell>{item.entity_group}</CTableDataCell>
+                    <CTableDataCell>{item.word}</CTableDataCell>
+                    <CTableDataCell>{item.score}</CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              ))}
+              {modelOut3.map((item, index) => (
+                <CTableBody striped hover>
+                  <CTableRow>
+                    <CTableDataCell>{item.entity_group}</CTableDataCell>
+                    <CTableDataCell>{item.word}</CTableDataCell>
+                    <CTableDataCell>{item.score}</CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              ))}
+              {modelOut4.map((item, index) => (
+                <CTableBody striped hover>
+                  <CTableRow>
+                    <CTableDataCell>{'Sentiment'}</CTableDataCell>
+                    <CTableDataCell>{item.label}</CTableDataCell>
+                    <CTableDataCell>{item.score}</CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              ))}
+            </CTable>
+          </CRow>
+        </CModalBody>
+
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModal(false)} >Close</CButton>
-          <CButton color="primary" >Save changes</CButton>
+          <CButton color="secondary" onClick={() => setModal(false)}>
+            Close
+          </CButton>
         </CModalFooter>
       </CModal>
 
       <CRow>
         <CCol md={6}>
           <CCard>
-            <CCardHeader title="Influencers">Influencers</CCardHeader>
-            <CInputGroup className="mb-3">
-              <CFormInput
-                onChange={(e) => setInfluencer(e.target.value)}
-                placeholder="Search Username"
-              />
-              <CButton onClick={() => handleClick(username)}>Search</CButton>
-            </CInputGroup>
+            <CCardHeader align="center" title="Influencers">
+              <h3>Influencers</h3>
+            </CCardHeader>
             <CCardBody>
               <div style={divStyle2}>
-                <CRow>
+                <CRow xs={{ cols: 1 }} md={{ cols: 3 }} className="g-4">
                   {users.map((item, index) => (
-                    <CCard style={{ width: '14rem', margin: '15px' }}>
-                      <CCardImage orientation="top" src={item.profileImageUrl} />
-                      <CCardText>{item.displayname}</CCardText>
-                      <CCardBody></CCardBody>
+                    <CCard className="h-100" style={{ width: '14rem', margin: '10px' }}>
+                      <CCardImage src={item.profileImageUrl} />
+
                       <CCardBody>
-                        <CButton onClick={() => handleClick(item.username)}>Detail</CButton>
+                        <CCardText align="center">
+                          <strong>{item.displayname}</strong>
+                        </CCardText>
                       </CCardBody>
+                      <CButton
+                        color="dark"
+                        onClick={() => handleClick(item.username)}
+                        variant="ghost"
+                      >
+                        Detail
+                      </CButton>
                     </CCard>
                   ))}
                 </CRow>
@@ -146,7 +226,9 @@ const InfluencerPage = () => {
 
         <CCol>
           <CCard hidden={stateHidden}>
-            <CCardHeader title="Influencers">Profile Details</CCardHeader>
+            <CCardHeader align="center" title="Influencers">
+              <h3>Profile Details</h3>
+            </CCardHeader>
             <CCardBody>
               <CWidgetStatsD
                 className="mb-3"
@@ -166,7 +248,6 @@ const InfluencerPage = () => {
                   {tweets.map((item, index) => (
                     <CCard style={{ width: '32rem', padding: '15px', position: 'center' }}>
                       <CRow>
-                        <CButton onClick={() => handleDetailClick(item.content)}>Detay ver</CButton>
                         <CCol xs={2}>
                           <CAvatar size="xl" src={user.profileImageUrl} />
                         </CCol>
@@ -183,6 +264,13 @@ const InfluencerPage = () => {
                         </CCol>
                       </CRow>
                       <CCardBody>{item.content}</CCardBody>
+                      <CButton
+                        color="info"
+                        onClick={() => handleDetailClick(item.content)}
+                        variant="outline"
+                      >
+                        Analyse
+                      </CButton>
                     </CCard>
                   ))}
                 </CRow>
