@@ -31,11 +31,26 @@ const _nav = [
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
-    name: 'Influencer',
-    to: '/influencer',
+    component: CNavGroup,
+    name: 'Influencers',
+    to: '/influencers',
     icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Influencer',
+        to: '/influencer',
+        icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Metrics',
+        to: '/influencer/metrics',
+        icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
+      },
+    ],
   },
+
   // {
   //   component: CNavItem,
   //   name: 'Entegrasyonlar',
