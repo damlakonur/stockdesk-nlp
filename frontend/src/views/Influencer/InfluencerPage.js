@@ -9,8 +9,6 @@ import {
   CCardBody,
   CCardText,
   CCardHeader,
-  CInputGroup,
-  CFormInput,
   CButton,
   CCardTitle,
   CModal,
@@ -24,7 +22,6 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
-  CTableFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import logo from './../../assets/images/react.jpg'
@@ -39,6 +36,7 @@ const InfluencerPage = () => {
   const [username, setInfluencer] = useState('')
   const [tweets, setTweets] = useState([])
   const [stateHidden, setStateHidden] = useState(true)
+  const [stateHidden2, setStateHidden2] = useState(true)
   const [favCount, setFavCount] = useState(0)
   const [statusCount, setStatusCount] = useState(0)
   const [followerCount, setFollowerCount] = useState(0)
@@ -50,6 +48,9 @@ const InfluencerPage = () => {
   const [modelOut3, setModelOut3] = useState([])
   const [modelOut4, setModelOut4] = useState([])
   const [isClaim, setIsClaim] = useState(false)
+  const [yahooStock, setYahooStock] = useState([])
+  const [date, setDate] = useState('')
+  const [predStocks, setPredStocks] = useState([])
 
   const handleClick = (e) => {
     console.log(e)
@@ -65,13 +66,14 @@ const InfluencerPage = () => {
         setStateHidden(false)
       })
   }
+
   const handleDetailClick = (e) => {
     console.log(e)
     axios
       .post(process.env.REACT_APP_API_BASE_URL + `/model/getResult`, { content: e })
       .then((res) => {
         setModal(true)
-        setModalTweet(e)
+        setModalTweet(e['content'])
         setResult(res.data.result)
         console.log(result)
         console.log(res.data.result)
@@ -85,8 +87,11 @@ const InfluencerPage = () => {
         setModelOut2(res.data.modelOut2)
         setModelOut3(res.data.modelOut3)
         setModelOut4(res.data.modelOut4)
-        console.log(modalTweet)
-        console.log(modal)
+        setYahooStock(res.data.yahooStock)
+        setPredStocks(res.data.predStocks)
+        setYahooStock(res.data.yahooStock)
+        // console.log(modalTweet)
+        // console.log(modal)
       })
       .catch((error) => {
         addToast(error_handling(error))
@@ -243,6 +248,19 @@ const InfluencerPage = () => {
               />
 
               <CCardTitle>{'Recent Tweets'}</CCardTitle>
+              {/*<CInputGroup className="mb-3">
+                <CFormInput
+                  onChange={(e) => setDate(e.target.value)}
+                  placeholder="Please enter a date in YY-MM-DD format"
+                />
+                <CButton
+                  color="dark"
+                  onClick={() => handleDateClick(user.username, date)}
+                  variant="outline"
+                >
+                  Get
+                </CButton>
+              </CInputGroup> */}
               <div style={divStyle}>
                 <CRow>
                   {tweets.map((item, index) => (
@@ -266,7 +284,7 @@ const InfluencerPage = () => {
                       <CCardBody>{item.content}</CCardBody>
                       <CButton
                         color="info"
-                        onClick={() => handleDetailClick(item.content)}
+                        onClick={() => handleDetailClick(item)}
                         variant="outline"
                       >
                         Analyse

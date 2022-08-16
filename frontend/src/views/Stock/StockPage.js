@@ -64,19 +64,19 @@ const StockPage = () => {
         addToast(error_handling(error))
       })
   }
-  const handleDetailClick = (e) => {
-    console.log(e)
-    axios
-      .post(process.env.REACT_APP_API_BASE_URL + `/stock_info/detail`, { symbol: e })
-      .then((res) => {
-        console.log(res)
-        setStockData(res.data)
-        setVisible(true)
-      })
-      .catch((error) => {
-        addToast(error_handling(error))
-      })
-  }
+  // const handleDetailClick = (e) => {
+  //   console.log(e)
+  //   axios
+  //     .post(process.env.REACT_APP_API_BASE_URL + `/stock_info/detail`, { symbol: e })
+  //     .then((res) => {
+  //       console.log(res)
+  //       setStockData(res.data)
+  //       setVisible(true)
+  //     })
+  //     .catch((error) => {
+  //       addToast(error_handling(error))
+  //     })
+  // }
 
   useEffect(() => {
     axios
@@ -114,7 +114,6 @@ const StockPage = () => {
                 <CTableHeaderCell>Low</CTableHeaderCell>
                 <CTableHeaderCell>Close</CTableHeaderCell>
                 <CTableHeaderCell>Volume</CTableHeaderCell>
-                <CTableHeaderCell>Detail</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -131,17 +130,6 @@ const StockPage = () => {
                   <CTableDataCell>{item.low}</CTableDataCell>
                   <CTableDataCell>{item.close}</CTableDataCell>
                   <CTableDataCell>{item.volume}</CTableDataCell>
-
-                  <CTableDataCell>
-                    <CButton
-                      color="info"
-                      onClick={() => handleDetailClick(item.symbol)}
-                      variant
-                      outline
-                    >
-                      Detail
-                    </CButton>
-                  </CTableDataCell>
                 </CTableRow>
               ))}
             </CTableBody>
