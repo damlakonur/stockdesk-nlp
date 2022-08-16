@@ -11,7 +11,6 @@ def getLastPrice(symbol):
     stock = yf.Ticker(symbol)
     #stock_data = stock.history(period="1d", interval="1m")
     stock_data = stock.history(period="min")
-    #stock_data = stock_data.to_json(orient="records")
     return stock_data
 
 @stock_bp.route('/stock_info', methods=["GET"])
@@ -23,13 +22,11 @@ def get_stock():
         stocks = []
         for stock in cursor:
             try:
-                #print(stock)
                 last_price = getLastPrice(stock["symbol"])
                 stock["close"] = str(round(last_price["Close"].values[0], 2))
                 stock["open"] = str(round(last_price["Open"].values[0], 2))
                 stock["high"] = str(round(last_price["High"].values[0],2))
                 stock["low"] = str(round(last_price["Low"].values[0], 2))
-                #print(last_price["Close"].values[0])
                 stocks.append(stock)
             except Exception as e:
                 print(e)
