@@ -17,14 +17,15 @@ import {
   CAvatar,
   CModal,
   CModalBody,
+  CModalTitle,
   CModalFooter,
   CModalHeader,
-  CModalTitle,
   CPopover,
   CTooltip,
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
+import Chart from 'react-apexcharts'
 
 import { cilBuilding, cilPeople } from '@coreui/icons'
 import logo from './../../assets/images/react.jpg'
@@ -53,6 +54,19 @@ const StockPage = () => {
         addToast(error_handling(error))
       })
   }
+  const handleChartClick = (e) => {
+    console.log(e)
+    axios
+      .post(process.env.REACT_APP_API_BASE_URL + `/stock_info/detail`, { symbol: e })
+      .then((res) => {
+        console.log(res.data.xaxis)
+        setStockData(res.data)
+        setVisible(true)
+      })
+      .catch((error) => {
+        addToast(error_handling(error))
+      })
+  }
   const handleDelClick = (e) => {
     console.log(e)
     axios
@@ -64,6 +78,7 @@ const StockPage = () => {
         addToast(error_handling(error))
       })
   }
+  // TODO: Fix displaying chart when button is clicked
   // const handleDetailClick = (e) => {
   //   console.log(e)
   //   axios
@@ -89,6 +104,29 @@ const StockPage = () => {
         addToast(error_handling(error))
       })
   }, [])
+  const options = {
+    chart: {
+      type: 'candlestick',
+      height: 350,
+    },
+    title: {
+      text: 'Historical Stock Price',
+      align: 'center',
+    },
+    xaxis: {
+      type: 'datetime',
+    },
+    yaxis: {
+      tooltip: {
+        enabled: true,
+      },
+    },
+  }
+  const series = [
+    {
+      data: stockData,
+    },
+  ]
 
   return (
     <>
@@ -98,6 +136,24 @@ const StockPage = () => {
         <CFormInput onChange={(e) => setSymbol(e.target.value)} placeholder="Username" />
         <CButton onClick={() => handleItemClick(symbol)}>Ara</CButton>
       </CInputGroup> */}
+      <CModal size="lg" visible={visible} onClose={() => setVisible(false)}>
+        <CModalHeader>
+          <CModalTitle>NLP Pipeline Output</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CRow>
+            <div id="chart">
+              <Chart options={options} series={series} type="candlestick" height={350} />
+            </div>
+          </CRow>
+        </CModalBody>
+
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setVisible(false)}>
+            Close
+          </CButton>
+        </CModalFooter>
+      </CModal>
       <CRow>
         <CCol md={12}>
           <strong> Stocks</strong>
@@ -114,6 +170,7 @@ const StockPage = () => {
                 <CTableHeaderCell>Low</CTableHeaderCell>
                 <CTableHeaderCell>Close</CTableHeaderCell>
                 <CTableHeaderCell>Volume</CTableHeaderCell>
+                {/* <CTableHeaderCell>Chart</CTableHeaderCell> */}
               </CTableRow>
             </CTableHead>
             <CTableBody>
@@ -130,6 +187,16 @@ const StockPage = () => {
                   <CTableDataCell>{item.low}</CTableDataCell>
                   <CTableDataCell>{item.close}</CTableDataCell>
                   <CTableDataCell>{item.volume}</CTableDataCell>
+                  {/* <CTableDataCell>
+                    {' '}
+                    <CButton
+                      onClick={() => handleChartClick(item.symbol)}
+                      variant="ghost"
+                      color="dark"
+                    >
+                      Show Chart
+                    </CButton>
+                  </CTableDataCell> */}
                 </CTableRow>
               ))}
             </CTableBody>

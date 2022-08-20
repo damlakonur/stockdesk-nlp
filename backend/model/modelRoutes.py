@@ -248,13 +248,8 @@ def get_prediction():
             data = ticker.history(start=start_date, end=today, interval='1d')
             for i in range(len(data)):
                 stock = {}
-                stock["close"] = str(round(data["Close"].values[i], 2))
-                stock["open"] = str(round(data["Open"].values[i], 2))
-                stock["high"] = str(round(data["High"].values[i],2))
-                stock["low"] = str(round(data["Low"].values[i], 2))
-                stock["volume"] = str(round(data["Volume"].values[i], 2))
-                stock["timestamp"] = str(data.iloc[i].name)
-                stock = json.dumps(stock)
+                stock['x'] = str(data.iloc[i].name)
+                stock['y'] = [round(data["Open"].values[i], 2),round(data["High"].values[i],2),round(data["Low"].values[i], 2),round(data["Close"].values[i], 2)]
                 stocks.append(stock)
 
         elif(flag == False and len(yahooStock) > 0):
@@ -262,13 +257,8 @@ def get_prediction():
                 ticker = yf.Ticker(yahooStock[i])
                 data = ticker.history(period="min")
                 stock = {}
-                stock["close"] = str(round(data["Close"].values[0], 2))
-                stock["open"] = str(round(data["Open"].values[0], 2))
-                stock["high"] = str(round(data["High"].values[0],2))
-                stock["low"] = str(round(data["Low"].values[0], 2))
-                stock["volume"] = str(round(data["Volume"].values[0], 2))
-                stock["timestamp"] = str(data.iloc[0].name)
-                stock = json.dumps(stock)
+                stock['x'] = str(data.iloc[i].name)
+                stock['y'] = [round(data["Open"].values[i], 2),round(data["High"].values[i],2),round(data["Low"].values[i], 2),round(data["Close"].values[i], 2)]
                 stocks.append(stock)
         else:
             pass
@@ -276,7 +266,6 @@ def get_prediction():
 
             
         return json.dumps({'status': status, 'result': result, 'modelOut2': modelOut2, 'modelOut3': modelOut3, 'modelOut4': modelOut4, 'yahooStock': yahooStock, 'predStock': stocks})
-        #return json.dumps({'status': 'SUCCESS', 'result': 'Gercek'})
     except Exception as e:
         return json.dumps({"error": str(e)})
 

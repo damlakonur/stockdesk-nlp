@@ -13,6 +13,11 @@ def getLastPrice(symbol):
     stock_data = stock.history(period="min")
     return stock_data
 
+def get1monthPrice(symbol):
+    stock = yf.Ticker(symbol)
+    stock_data = stock.history(period="1d", interval="1m")
+    return stock_data
+
 @stock_bp.route('/stock_info', methods=["GET"])
 def get_stock():
     try:
@@ -44,11 +49,16 @@ def get_stock():
 def get_stock_detail():
     try:
         symbol = request.json["symbol"]
+        stocks = []
         stock = yf.Ticker(symbol)
-        #stock_data = stock.history(period="1d", interval="1m")
-        stock_data = stock.history(period="min")
-        stock_data = stock_data.to_json(orient="records")
-        return {"stock_data": stock_data}
+        ## FIXX
+        stock_data = stock.history(start='2022-07-15', end='2022-08-17', interval='1d')
+        for i in range(len(stock_data)):
+            stock = {}
+            stock['x'] = str(stock_data.iloc[i].name)
+            stock['y'] = [round(stock_data["Open"].values[i], 2),round(stock_data["High"].values[i],2),round(stock_data["Low"].values[i], 2),round(stock_data["Close"].values[i], 2)]
+            stocks.append(stock)
+        return json.dumps({"stock_data": stocks})
     except Exception as e:
         print(e)
         return {"status": "fail",
@@ -79,10 +89,8 @@ def add_stock_info():
         stock_data = stock_data.get_info()
         stock_data["_id"] = stock_name
         stock_data = json.loads(dumps(stock_data))
-        #print(stock_data)
         db = current_app.config["db_conn"]
         stock = db["stock_info"]
-        #stock.drop()
         stock.insert_one(stock_data)
 
         return {"stock": 'Success'}
