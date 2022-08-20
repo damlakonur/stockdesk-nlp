@@ -18,12 +18,12 @@ import {
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
-  {
-    component: CNavItem,
-    name: 'Admin',
-    to: '/admin',
-    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
-  },
+  //   {
+  //     component: CNavItem,
+  //     name: 'Admin',
+  //     to: '/admin',
+  //     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+  //   },
   {
     component: CNavItem,
     name: 'Stock',
@@ -42,12 +42,12 @@ const _nav = [
         to: '/influencer',
         icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
       },
-      {
-        component: CNavItem,
-        name: 'Metrics',
-        to: '/influencer/metrics',
-        icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Metrics',
+      //   to: '/influencer/metrics',
+      //   icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
+      // },
     ],
   },
 
