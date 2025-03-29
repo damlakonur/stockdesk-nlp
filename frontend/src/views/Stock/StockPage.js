@@ -130,30 +130,13 @@ const StockPage = () => {
 
   return (
     <>
-      {/* <CToaster ref={toaster} push={toast} placement="top-end" />
+      <CToaster ref={toaster} push={toast} placement="top-end" />
 
       <CInputGroup className="mb-3">
-        <CFormInput onChange={(e) => setSymbol(e.target.value)} placeholder="Username" />
-        <CButton onClick={() => handleItemClick(symbol)}>Ara</CButton>
-      </CInputGroup> */}
-      <CModal size="lg" visible={visible} onClose={() => setVisible(false)}>
-        <CModalHeader>
-          <CModalTitle>NLP Pipeline Output</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <CRow>
-            <div id="chart">
-              <Chart options={options} series={series} type="candlestick" height={350} />
-            </div>
-          </CRow>
-        </CModalBody>
+        <CFormInput onChange={(e) => setSymbol(e.target.value)} placeholder="Enter stock symbol (e.g. AKBNK)" />
+        <CButton onClick={() => handleItemClick(symbol)}>Add Stock</CButton>
+      </CInputGroup>
 
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisible(false)}>
-            Close
-          </CButton>
-        </CModalFooter>
-      </CModal>
       <CRow>
         <CCol md={12}>
           <strong> Stocks</strong>

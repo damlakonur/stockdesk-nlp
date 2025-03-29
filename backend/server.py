@@ -1,6 +1,7 @@
 import json
 import sys
 import os
+from dotenv import load_dotenv
 import pymongo
 import redis
 from celery import Celery
@@ -12,6 +13,8 @@ from tweepy import OAuthHandler
 import sys
 import pandas as pd
 
+# Load environment variables from .env file
+load_dotenv()
 
 from influencer.routes import influencer_bp
 from stock.stockRoutes import stock_bp
@@ -26,17 +29,28 @@ def getAuth():
             "TWITTER_ACCESS_TOKEN_SECRET"))
         api = tweepy.API(auth, wait_on_rate_limit=True)
         if api.verify_credentials():
-            print("Authentication OK")
+            print("Twitter Authentication OK")
         else:
-            print("Error during authentication")
+            print("Twitter Authentication Error")
+            return None
     except tweepy.TweepyException as e:
-        print("Error : " + str(e))
-        sys.exit()
+        print("Twitter Authentication Error : " + str(e))
+        return None
     return api
 
 
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 
 app.register_blueprint(influencer_bp)
@@ -51,7 +65,12 @@ app.config["db_conn"] = pymongo.MongoClient(
     password=os.getenv("MONGO_PASSWORD"))[
     os.getenv("MONGO_DB")]
 
-app.config["api"] = getAuth()
+# Make Twitter API optional
+try:
+    app.config["api"] = getAuth()
+except Exception as e:
+    print(f"Warning: Twitter API not available: {str(e)}")
+    app.config["api"] = None
 
 
 if __name__ == '__main__':
